@@ -1,12 +1,15 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class NQueens extends JPanel {
     private int size;
     private int[] queens;
+
+    private Point currentTest = null;
+    private Set<Point> highlightedThreats = new HashSet<>();
 
     public static void main(String[] args) {
         String input = JOptionPane.showInputDialog("Bitte gib N ein (N ≥ 4):");
@@ -48,18 +51,41 @@ public class NQueens extends JPanel {
         if (row == size) return true;
 
         for (int col = 0; col < size; col++) {
+            currentTest = new Point(col, row);
             if (isSafe(row, col)) {
+                highlightedThreats.clear();
                 queens[row] = col;
                 repaint();
                 sleep(200);
                 if (placeQueen(row + 1)) return true;
+            } else {
+                highlightedThreats = getThreatsFromQueen(row, col);
+                repaint();
+                sleep(200);
             }
         }
 
         queens[row] = -1;
+        currentTest = null;
+        highlightedThreats.clear();
         repaint();
         sleep(200);
         return false;
+    }
+
+    private Set<Point> getThreatsFromQueen(int row, int col) {
+        Set<Point> threats = new HashSet<>();
+        for (int r = 0; r < size; r++) {
+            if (r != row) threats.add(new Point(col, r));
+        }
+        for (int r = 0; r < size; r++) {
+            int diff = r - row;
+            if (col + diff >= 0 && col + diff < size && r != row)
+                threats.add(new Point(col + diff, r));
+            if (col - diff >= 0 && col - diff < size && r != row)
+                threats.add(new Point(col - diff, r));
+        }
+        return threats;
     }
 
     private boolean isSafe(int row, int col) {
@@ -89,6 +115,16 @@ public class NQueens extends JPanel {
                 g.setColor((row + col) % 2 == 0 ? Color.WHITE : Color.GRAY);
                 g.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
             }
+        }
+
+        g.setColor(new Color(255, 0, 0, 100));
+        for (Point p : highlightedThreats) {
+            g.fillRect(p.x * tileSize, p.y * tileSize, tileSize, tileSize);
+        }
+
+        if (currentTest != null) {
+            g.setColor(new Color(0, 255, 0, 100));
+            g.fillRect(currentTest.x * tileSize, currentTest.y * tileSize, tileSize, tileSize);
         }
 
         g.setColor(Color.RED);
