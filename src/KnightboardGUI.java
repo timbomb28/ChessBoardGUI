@@ -38,6 +38,7 @@ public class KnightboardGUI extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 g.setColor((row + col) % 2 == 0 ? Color.WHITE : Color.GRAY);

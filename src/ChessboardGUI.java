@@ -63,16 +63,21 @@ public class ChessboardGUI extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 g.setColor((row + col) % 2 == 0 ? Color.WHITE : Color.GRAY);
                 g.fillRect(col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            }
+        }
 
-                if (queens[row] == col) {
-                    g.setColor(Color.RED);
-                    g.setFont(new Font("SansSerif", Font.BOLD, 36));
-                    g.drawString("♛", col * TILE_SIZE + 12, row * TILE_SIZE + 44);
-                }
+        // Damen zeichnen
+        g.setColor(Color.RED);
+        g.setFont(new Font("SansSerif", Font.BOLD, 36));
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            int col = queens[row];
+            if (col != -1) {
+                g.drawString("♛", col * TILE_SIZE + 12, row * TILE_SIZE + 44);
             }
         }
     }
